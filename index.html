@@ -1,0 +1,75 @@
+<!Doctype HTML>
+<html>
+  <head>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Amatic+SC" rel="stylesheet">
+    
+    <!--Stylesheet  -->
+    <link rel="stylesheet" type="text/css" href="main.css"> 
+
+   
+  
+
+    <!--Ajax Stuff -->
+	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>  
+ 
+    <!--Javascript -->
+    <script>
+function getLocation(){
+        console.log("getLocation");
+        var x = document.getElementById("weather");
+        if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+        } else { 
+                 x.innerHTML = "Geolocation is not supported by this browser.";
+                }
+        }//end getLocation()       
+
+        function showPosition(position){
+                console.log("lat " + position.coords.latitude);
+                console.log("lng " + position.coords.longitude);
+          
+          var myurl =  "https://fcc-weather-api.glitch.me/api/current?lat=" + position.coords.latitude + "&lon=" + position.coords.longitude;
+          console.log(myurl);
+          $.ajax({
+            url:myurl,
+            dataType:"json",
+              success:function(parsed_json){
+                console.log(parsed_json);
+                var location = parsed_json.name;
+                console.log(location);
+                var weather = parsed_json.weather[0].description;                console.log(weather);
+                var icon = parsed_json.weather[0].icon;
+                console.log(icon);
+                var temp = parsed_json.main.temp;
+                console.log(temp);
+                var wind = parsed_json.wind.speed;
+                console.log(wind);
+                
+                var str = " & " + temp + " degrees Celsius";
+                $("#location").text(location);
+                $("#weather").text(weather + str);
+                $("#wind").text("Wind: " + wind + " MPH");
+                $("#data").prepend('<img src="'+icon+'"/>')
+              }//end success function
+            
+            
+          })//end AJAX
+          
+          
+ }//end show position
+ </script> 
+  
+  </head>
+  <body> 
+    <div id = "container"> 
+      <h1>Your Current Weather</h1>
+      <button type = "submit" onclick="getLocation()">Get Weather</button>
+      <h2 id= "location"></h2>
+      <h2 id="weather"></h2>
+      <div id ="data">
+      </div>
+    </div>   
+  </body>
+ 
+</html>
